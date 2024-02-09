@@ -1,9 +1,10 @@
 package pl.javastart.task;
 
 public class Processor extends Component implements Overclockable {
-    public static final int MAX_TEMPERATURE = 100;
-    int timing;
-    int currentTemperature = 50;
+    private static final int MAX_TEMPERATURE_PROCESSOR = 100;
+    private static final int TEMPERATURE_GAINING_DURING_TIMING_PROCESSOR = 10;
+    private int timing;
+    private int currentTemperature = 50;
 
     public Processor(String model, String producent, String seriesNumber, int timing) {
         super(model, producent, seriesNumber);
@@ -12,20 +13,32 @@ public class Processor extends Component implements Overclockable {
 
     @Override
     public void overlock() {
-        try {
-            checkTemperature();
-            timing += MAX_TEMPERATURE;
-            currentTemperature += 10;
-            System.out.println("Taktwanie procesora: " + timing);
-            System.out.println("Temperatura procesora: " + currentTemperature);
-        } catch (TemperatureExceeded e) {
-            System.out.println("Brak możliwości podkręcenia procesora, ryzyko spalenia.");
-        }
+        checkTemperature();
+        timing += MAX_TEMPERATURE_PROCESSOR;
+        currentTemperature += TEMPERATURE_GAINING_DURING_TIMING_PROCESSOR;
+        System.out.println("Taktwanie procesora: " + timing);
+        System.out.println("Temperatura procesora: " + currentTemperature);
     }
 
     void checkTemperature() {
-        if (currentTemperature >= MAX_TEMPERATURE) {
-            throw new TemperatureExceeded();
+        if (MAX_TEMPERATURE_PROCESSOR - currentTemperature <= TEMPERATURE_GAINING_DURING_TIMING_PROCESSOR) {
+            throw new ProcessorTemperatureExceededException();
         }
+    }
+
+    public int getTiming() {
+        return timing;
+    }
+
+    public void setTiming(int timing) {
+        this.timing = timing;
+    }
+
+    public int getCurrentTemperature() {
+        return currentTemperature;
+    }
+
+    public void setCurrentTemperature(int currentTemperature) {
+        this.currentTemperature = currentTemperature;
     }
 }
